@@ -41,9 +41,12 @@ The same game as the Telegram bot. Where Discord differs:
   result card says the run was added instead.
 - `/leaderboard` shows best scores, with a button that swaps the same
   message to total points and back.
-- `/help` and `/settings` answer only the player who asked, everywhere but
-  the bot's own DM (where `/help` is shown normally). `/help` is the help;
-  there is no `/start`.
+- `/help` is shown to the whole channel, and anyone can press its Play and
+  Leaderboard buttons for their own run or board. `/help` is the help; there
+  is no `/start`.
+- `/settings` answers only the player who asked.
+- The bot's status reads "Quizzing MRT routes in x guilds". It is updated
+  whenever the bot joins or leaves a server. User installs are not counted.
 - In the bot's own DM, plain text gets a pointer to the card or `/play`.
   Elsewhere, plain messages are ignored.
 - Through a user install, in a channel the bot is not in, every card is sent
@@ -92,7 +95,8 @@ here is timed; an hourly tidy clears expired buttons.
 ## Checking it by hand
 
 1. `/help`: how to play, the question kinds, a scoring table, the leaderboard
-   rules and the command list. In a server only you see it.
+   rules and the command list, visible to everyone in the channel. Press its
+   Play from a second account: that account gets its own run.
 2. `/play`: a card with four answer buttons.
 3. Tap an answer: the same card becomes question 2, with how question 1 went
    at the top. Turn off old card removal in `/settings` and tap again: the

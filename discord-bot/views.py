@@ -202,8 +202,11 @@ SCORING = [
 ]
 
 
-def help_card(button, user_id: int, site_url: str, donation_url: str | None):
-    """Everything a start command would say. There is no start command."""
+def help_card(button, site_url: str, donation_url: str | None):
+    """Everything a start command would say. There is no start command.
+
+    The card is public, so its buttons belong to no one: whoever taps Play or
+    Leaderboard gets their own run or board."""
     embed = discord.Embed(
         title="How well do you know the MRT lines?",
         description="A quiz on the order of Singapore's MRT and LRT stations, played right here. No sign up.",
@@ -267,7 +270,7 @@ def help_card(button, user_id: int, site_url: str, donation_url: str | None):
     )
 
     rows = [
-        [button("play", "Play", PRIMARY, user_id=user_id), button("leaderboard", "Leaderboard", GREY, user_id=user_id)],
+        [button("play", "Play", PRIMARY), button("leaderboard", "Leaderboard", GREY)],
         [discord.ui.Button(label="Play in the browser", url=site_url)],
     ]
     if donation_url:

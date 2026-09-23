@@ -330,12 +330,8 @@ class Game:
 
     async def cmd_help(self, interaction: discord.Interaction) -> None:
         self.remember(interaction.user)
-        uid = interaction.user.id
-        embed, rows = views.help_card(self.button, uid, self.config.site_url, self.config.donation_url)
-        # Only the asker needs the rules anywhere but their own chat with the bot.
-        await interaction.response.send_message(
-            embed=embed, view=make_view(rows), ephemeral=not interaction.context.dm_channel
-        )
+        embed, rows = views.help_card(self.button, self.config.site_url, self.config.donation_url)
+        await interaction.response.send_message(embed=embed, view=make_view(rows))
 
     async def on_dm_text(self, message: discord.Message) -> None:
         key = (message.channel.id, message.author.id)
