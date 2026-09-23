@@ -1,14 +1,14 @@
 {
-    "name": "Template by UwU Apps",
-    "short_name": "UwU Template",
-    "description": "A simple template app; view live template at a glance!",
+    "name": "MRT Route Game by UwU Apps",
+    "short_name": "MRT Route Game",
+    "description": "A simple mrtroute app; view live mrtroute at a glance!",
     "icons": [{
-            "src": "templateicon1-192.png",
+            "src": "RSG-192.png",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "templateicon1-512.png",
+            "src": "RSG-512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
@@ -32,7 +32,7 @@
     "display": "standalone",
     "display_override": ["fullscreen", "minimal-ui", "window-controls-overlay"],
     "orientation": "any",
-    "id": "template",
+    "id": "mrtroute",
     "dir": "ltr",
     "scope": "/",
     "lang": "en",
