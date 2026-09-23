@@ -1,5 +1,8 @@
-// POST /api/leaderboard/submit  { run_id, name } -> { name, rank, best_score }
-// The score is read from the run, never taken from the request.
+// POST /api/leaderboard/submit  { run_id, name }
+//   -> { name, rank, best_score, total, runs, total_rank }
+// rank and best_score are the best-score board; total, runs and total_rank
+// are the cumulative one. The score is read from the run, never taken from
+// the request.
 
 import { endpoint, HttpError, rateLimit, uuid } from "../_lib/http.js";
 import { cleanName } from "../_lib/names.js";
@@ -23,5 +26,12 @@ export default endpoint("POST", async ({ req, bot, body }) => {
     throw new HttpError(status, row?.status ?? "server", message);
   }
 
-  return { name, rank: Number(row.rank), best_score: row.best_score };
+  return {
+    name,
+    rank: Number(row.rank),
+    best_score: row.best_score,
+    total: Number(row.total),
+    runs: row.runs,
+    total_rank: Number(row.total_rank),
+  };
 });

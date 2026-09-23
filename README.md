@@ -44,8 +44,8 @@ and `02-line-order.md` files at the root are the specs this is built to.
 
 1. Check `mrtguessr_stations` exists in the Supabase project (it does if MRT
    Station Guesser is deployed).
-2. Run `migrations/001_lineorder_schema.sql`, then
-   `002_lineorder_load_network.sql`, in the Supabase SQL editor.
+2. Run every file in `migrations/`, in order, in the Supabase SQL editor.
+   `002_lineorder_load_network.sql` loads the line data.
    `python scripts/seed_supabase.py` does the same as `002` if you would
    rather not paste it.
 3. On the Vercel project, add `BOT_API_TOKEN`: a long random string, for

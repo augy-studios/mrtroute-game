@@ -31,7 +31,7 @@
 // 4. Nothing under /api/ is ever cached. A cached question or leaderboard is
 //    a wrong answer, not a stale one.
 
-const VERSION = "mrtnav-v2";
+const VERSION = "mrtnav-v3";
 
 const SHELL = `mrtnav-shell-${VERSION}`;
 
@@ -59,6 +59,7 @@ const PRECACHE = [
   "/js/game.js",
   "/js/guide.js",
   "/js/leaderboard.js",
+  "/js/settings.js",
   "/js/theme.js",
   "/js/icons.js",
   "/js/ui.js",

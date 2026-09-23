@@ -1,8 +1,9 @@
 # discord-bot
 
 The Discord client for MRT Navigator Game. discord.py with slash commands,
-in servers and direct messages. First-time Developer Portal setup is in
-[`setup.md`](setup.md).
+installable on a server or on a user account, and usable in servers, the
+bot's direct messages, and other DMs and group DMs. First-time Developer
+Portal setup is in [`setup.md`](setup.md).
 
 ## Running it
 
@@ -29,27 +30,49 @@ The same game as the Telegram bot. Where Discord differs:
   answer only the player it belongs to.
 - `/play` sends the first card: the question as an embed, with four answer
   buttons two to a row.
-- Tapping an answer redraws that card as answered: the buttons stay but are
-  disabled, the right answer green and a wrong pick red, with a line saying
-  why. The next card follows below it.
+- Tapping an answer is the whole move. With "Remove old cards" on (the
+  default), the run is one card that turns into the next question, with how
+  the last one went at its top. Off, the answered card stays, its buttons
+  disabled, the right answer green and a wrong pick red, and the next card
+  follows below it.
 - After the tenth, the result card: `Add as NAME` in one tap, and "Another
-  name", which opens a box. NAME is the name last used or, until there is
-  one, the player's Discord display name.
-- `/help` answers only the player who asked, in a server. It is the help;
+  name", which opens a box. NAME is the saved leaderboard name or, until one
+  is saved, the player's Discord display name. With automatic adding on, the
+  result card says the run was added instead.
+- `/leaderboard` shows best scores, with a button that swaps the same
+  message to total points and back.
+- `/help` and `/settings` answer only the player who asked, everywhere but
+  the bot's own DM (where `/help` is shown normally). `/help` is the help;
   there is no `/start`.
-- In a direct message, plain text gets a pointer to the card or `/play`.
-  In a server, plain messages are ignored.
+- In the bot's own DM, plain text gets a pointer to the card or `/play`.
+  Elsewhere, plain messages are ignored.
+- Through a user install, in a channel the bot is not in, every card is sent
+  and edited through the interaction's own token, so a run plays the same.
+  Removing an old run's card when `/play` starts a new one uses the token of
+  the command that sent it, which lasts 15 minutes; after that the old card
+  is left in place, its buttons refusing the old run.
+- `/settings` holds the same name and two switches as the Telegram bot,
+  each redrawn in place when pressed:
+
+| Setting | Default | What it does |
+|---|---|---|
+| Leaderboard name | Discord display name | Filled in by every successful submit under a typed name; can be changed (checked by the API) or cleared back to the Discord name. |
+| Add finished runs automatically | off | Submits every finished run under the leaderboard name. |
+| Remove old cards | on | A run stays as one card, and an old run's card is deleted. Off leaves every answered card in the channel. |
+
+Settings are the bot's own, kept against the Discord user id. They are not
+shared with the Telegram bot or the PWA; the leaderboard is.
 
 ## What lives where
 
 | | |
 |---|---|
 | Questions, answers, scores | The API, in Supabase. The bot has no Supabase key. |
-| Buttons, each player's current run per channel, question cards as sent, remembered names | `bot.sqlite3`, local and gitignored. |
+| Buttons, each player's current run and card per channel (with the token that sent it), question cards as sent, settings | `bot.sqlite3`, local and gitignored. |
 
 Buttons carry an opaque id looked up in SQLite, matched by pattern, so answer
 buttons keep working across restarts and cannot be forged. Losing
-`bot.sqlite3` costs old buttons and remembered names, never a score. Nothing
+`bot.sqlite3` costs old buttons and everyone's settings, never a score. Nothing
 here is timed; an hourly tidy clears expired buttons.
 
 ## Files
@@ -57,7 +80,7 @@ here is timed; an hourly tidy clears expired buttons.
 | File | What it does |
 |---|---|
 | `bot.py` | Entry point: config, lock, the client, slash commands, the hourly tidy. |
-| `handlers.py` | Commands, answer buttons, the name box and the leaderboard. |
+| `handlers.py` | Commands, answer buttons, the name box, settings and the leaderboard. |
 | `views.py` | Message builders, as embed plus buttons. |
 | `buttons.py` | The one button class every button uses, and the registry lookup. |
 | `commands.py` | The command list. `python commands.py` prints it. |
@@ -71,13 +94,20 @@ here is timed; an hourly tidy clears expired buttons.
 1. `/help`: how to play, the question kinds, a scoring table, the leaderboard
    rules and the command list. In a server only you see it.
 2. `/play`: a card with four answer buttons.
-3. Tap an answer: the card's buttons go grey, green and red, the reason shows,
-   and the next card arrives below.
+3. Tap an answer: the same card becomes question 2, with how question 1 went
+   at the top. Turn off old card removal in `/settings` and tap again: the
+   card's buttons go grey, green and red, and the next card arrives below.
 4. Have a second account `/play` in the same channel: two runs, and neither
    player can press the other's buttons.
 5. Restart the bot mid-run and tap an answer on the waiting card: it works.
 6. Finish the run: `Add as NAME`, or Another name with a rude name (refused,
    only you see why), then a good one.
-7. Direct message the bot: `/play` works there too.
-8. `/leaderboard`: a table.
-9. Start a second copy: refused with the first one's pid.
+7. `/settings`: set a name, turn on automatic adding, and finish a run; the
+   result card says it was added, with both ranks.
+8. Direct message the bot: `/play` works there too.
+9. Install the app to your account and, in a DM with a friend (or a server
+   without the bot), type `/`: the commands are listed. `/play` there and
+   play a whole run from the card's buttons. Then `/play` again: the old
+   card goes.
+10. `/leaderboard`: a table, and the button swaps to total points in place.
+11. Start a second copy: refused with the first one's pid.

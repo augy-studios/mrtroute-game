@@ -45,7 +45,8 @@ A quiz on the order of Singapore's MRT and LRT stations. Which station is betwee
 ```text
 start - How to play, scoring, the leaderboard, and every command.
 play - Start a run of ten questions.
-leaderboard - The best run under each name.
+leaderboard - Best scores and total points, one row per name.
+settings - Your leaderboard name, automatic adding, and chat tidying.
 ```
 
 The bot also registers this list itself at every startup, so this step only

@@ -4,10 +4,10 @@
 import { api } from "./api.js";
 import { openGuide } from "./guide.js";
 import { openLeaderboard } from "./leaderboard.js";
+import { getSettings, saveSettings } from "./settings.js";
 import { escapeHtml, hydrateIcons } from "./ui.js";
 
 const RUN_STORAGE = "mrtnav.run";
-const NAME_STORAGE = "mrtnav.name";
 const GONE = new Set(["run_not_found", "run_expired", "question_not_found"]);
 
 const $ = (id) => document.getElementById(id);
@@ -195,38 +195,50 @@ function showResult(state) {
   $("submitForm").classList.toggle("hidden", !canSubmit);
   $("submitted").classList.add("hidden");
   $("submitMsg").textContent = state.expired && !state.submitted ? "This run is too old to add to the leaderboard." : "";
-  $("nameInput").value = store.get(NAME_STORAGE) ?? "";
+  const prefs = getSettings();
+  $("nameInput").value = prefs.name ?? "";
   $("submitBtn").disabled = false;
   showPanel("result");
   say("");
   $("resultTitle").focus({ preventScroll: true });
+
+  if (canSubmit && prefs.auto_submit && prefs.name) submitAs(prefs.name, true);
 }
 
-async function onSubmit(event) {
-  event.preventDefault();
-  const name = $("nameInput").value.trim();
+// Adds the run under a name, typed or saved. Any name that goes through
+// becomes the saved one, as on the bots.
+async function submitAs(name, auto = false) {
   const msg = $("submitMsg");
-  if (!name) {
-    msg.textContent = "Enter a name.";
-    $("nameInput").focus();
-    return;
-  }
   $("submitBtn").disabled = true;
-  msg.textContent = "";
+  msg.textContent = auto ? `Adding as ${name}.` : "";
   try {
     const r = await api.submit(runId, name);
-    store.set(NAME_STORAGE, r.name);
-    $("submittedText").textContent = `Added as ${r.name}. Best score ${r.best_score}, ranked ${r.rank}.`;
+    saveSettings({ name: r.name });
+    const runs = r.runs === 1 ? "1 run" : `${r.runs} runs`;
+    $("submittedText").textContent =
+      `Added as ${r.name}. Best score ${r.best_score}, ranked ${r.rank}. ` +
+      `Total ${r.total} over ${runs}, ranked ${r.total_rank}.`;
     $("submitForm").classList.add("hidden");
     $("submitted").classList.remove("hidden");
   } catch (err) {
-    msg.textContent =
-      err.code === "offline"
-        ? "No connection. Try again once you are back online."
-        : err.message || "That did not go through. Try again in a moment.";
+    if (err.code === "offline") msg.textContent = "No connection. Try again once you are back online.";
+    else if (auto && err.status === 400) msg.textContent = "Your saved name was refused, so this run was not added. Change it in Settings.";
+    else if (auto && err.status !== 409 && err.status !== 410) msg.textContent = "This run could not be added automatically. Try the button.";
+    else msg.textContent = err.message || "That did not go through. Try again in a moment.";
     if (err.code === "already_submitted" || err.code === "expired") $("submitForm").classList.add("hidden");
     else $("submitBtn").disabled = false;
   }
+}
+
+function onSubmit(event) {
+  event.preventDefault();
+  const name = $("nameInput").value.trim();
+  if (!name) {
+    $("submitMsg").textContent = "Enter a name.";
+    $("nameInput").focus();
+    return;
+  }
+  submitAs(name);
 }
 
 // Starting and resuming.

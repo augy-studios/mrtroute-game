@@ -4,7 +4,7 @@
 
 One process: discord.py's gateway connection, plus an hourly tidy of old
 SQLite rows. Game state lives behind the API; SQLite holds buttons, each
-player's current run and remembered names.
+player's current run and settings.
 
 Exit codes: 0 clean stop, 2 bad environment or token, 3 already running,
 1 other.
@@ -48,6 +48,10 @@ def register(tree: app_commands.CommandTree, game: Game) -> None:
     async def leaderboard(interaction: discord.Interaction) -> None:
         await game.cmd_leaderboard(interaction)
 
+    @tree.command(name="settings", description=DESCRIPTIONS["settings"])
+    async def settings(interaction: discord.Interaction) -> None:
+        await game.cmd_settings(interaction)
+
     @tree.error
     async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError) -> None:
         log.exception("command %s failed", interaction.command and interaction.command.name, exc_info=error)
@@ -62,13 +66,16 @@ class Bot(discord.Client):
         # Default intents only. Direct message text reaches a bot without the
         # privileged message content intent, and nothing else is read.
         super().__init__(intents=discord.Intents.default())
-        # Servers the bot is in, and its direct messages. Not installable on a
-        # user account: the cards are sent and edited with the bot's own
-        # token, which needs the bot in the channel.
+        # Installable on a server and on a user account, and usable in
+        # servers, the bot's direct messages, and other DMs and group DMs.
+        # Cards are sent and edited through each interaction's own token,
+        # which works where a user install puts the commands in a channel the
+        # bot is not in; an old run's card is removed through the token that
+        # sent it (Game.card_hook).
         self.tree = app_commands.CommandTree(
             self,
-            allowed_contexts=app_commands.AppCommandContext(guild=True, dm_channel=True, private_channel=False),
-            allowed_installs=app_commands.AppInstallationType(guild=True, user=False),
+            allowed_contexts=app_commands.AppCommandContext(guild=True, dm_channel=True, private_channel=True),
+            allowed_installs=app_commands.AppInstallationType(guild=True, user=True),
         )
         self.config = config
         self.conn = db.connect(config.db_path)

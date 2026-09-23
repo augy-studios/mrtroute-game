@@ -21,12 +21,27 @@ random id the browser keeps in local storage, or `tg:<user id>` /
 | `POST /api/question/new` | `run_id, client_key` | `question_id, prompt, options, difficulty, difficulty_name, points, index, total, run_score` |
 | `POST /api/question/answer` | `question_id, client_key, choice` | `correct, answer_index, points, run_score, finished, answered, total, explain` |
 | `POST /api/run/state` | `run_id, client_key` | `run_id, question_count, answered, correct, score, finished, submitted, expired` |
-| `POST /api/leaderboard/submit` | `run_id, name` | `name, rank, best_score` |
-| `GET /api/leaderboard` | | `entries: [{ rank, name, score }]`, cached 30 s |
+| `POST /api/leaderboard/submit` | `run_id, name` | `name, rank, best_score, total, runs, total_rank` |
+| `POST /api/leaderboard/name` | `name` | `name`, cleaned, or a `400` saying why not |
+| `GET /api/leaderboard` | `?board=best` (default) or `?board=total` | `board, entries`, cached 30 s |
 
-`run/state` is an addition to the spec's list, so a client can pick a run
-up again after a reload or restart. `choice` is the index of the option
-picked, 0 to 3.
+`run/state` and `leaderboard/name` are additions to the spec's list:
+`run/state` so a client can pick a run up again after a reload or restart,
+and `name` so a client can check a name it wants to save in its settings.
+`choice` is the index of the option picked, 0 to 3.
+
+## Leaderboards
+
+Two boards over the same submissions, one row per name, names compared
+case-insensitively:
+
+| Board | Entries | Ranked by |
+|---|---|---|
+| `best` | `{ rank, name, score }` | the name's single best run; ties to whoever got it first |
+| `total` | `{ rank, name, total, runs }` | every submitted run added up; ties to fewer runs, then whoever got there first |
+
+Only submitted runs count towards either, since a run has no name until it
+is submitted. Submit returns the name's place on both.
 
 `question/new` returns the run's open question if it has one, and only makes
 a new one once that is answered. A unique index allows one open question per

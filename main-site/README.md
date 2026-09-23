@@ -21,7 +21,18 @@ one tap; the right answer and the one picked are marked at once, with a line
 saying why, and Next moves on. Keys 1 to 4 answer too. Ten questions make a
 run, easy to hard. At the end the run can go on the leaderboard under a name,
 which this browser remembers. A run left open survives a reload, keyed by a
-random `client_key` in local storage.
+random `client_key` in local storage. The trophy button opens both
+leaderboards, best score and total points.
+
+**Settings:** the gear button holds the bots' `/settings` that make sense in
+a browser, kept in local storage and separate from the bots':
+
+| Setting | Default | What it does |
+|---|---|---|
+| Leaderboard name | not set | Checked by `/api/leaderboard/name`; also saved by every successful submit. |
+| Add finished runs automatically | off | Submits every finished run under the saved name. Needs a name; clearing it turns this off. |
+
+The bots' "remove old cards" is left out: there are no old cards here.
 
 **Line guide:** the route button lists every line's stations in order, with
 where branches leave and loops return. It reads `data/network.json`, which is

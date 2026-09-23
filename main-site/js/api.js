@@ -65,6 +65,7 @@ export const api = {
   runState: (runId) => withKey("/api/run/state", { run_id: runId }),
   question: (runId) => withKey("/api/question/new", { run_id: runId }),
   answer: (questionId, choice) => withKey("/api/question/answer", { question_id: questionId, choice }),
+  checkName: (name) => call("POST", "/api/leaderboard/name", { name }),
   submit: (runId, name) => call("POST", "/api/leaderboard/submit", { run_id: runId, name }),
-  leaderboard: () => call("GET", "/api/leaderboard"),
+  leaderboard: (board) => call("GET", `/api/leaderboard?board=${encodeURIComponent(board)}`),
 };

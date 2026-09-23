@@ -8,7 +8,8 @@ Discord caps each at 100 characters.
 COMMANDS = [
     ("help", "How to play, scoring, the leaderboard, and every command."),
     ("play", "Start a run of ten questions."),
-    ("leaderboard", "The best run under each name."),
+    ("leaderboard", "Best scores and total points, one row per name."),
+    ("settings", "Your leaderboard name, automatic adding, and card tidying."),
 ]
 
 DESCRIPTIONS = dict(COMMANDS)

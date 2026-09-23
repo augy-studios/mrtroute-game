@@ -9,7 +9,8 @@ ES modules, loaded from `app.js`. Every file here must also be listed in
 | `game.js` | The game screen: questions, answers, the result and submitting it. |
 | `api.js` | Calls to `/api/`, and this browser's random `client_key`. |
 | `guide.js` | The line guide, from `data/network.json`. Works offline. |
-| `leaderboard.js` | The leaderboard window. |
+| `leaderboard.js` | The leaderboard window, both boards. |
+| `settings.js` | The settings window and the settings themselves, kept in local storage. |
 | `theme.js` | Theme system with time-based mode, from `uwuapps-theme.md`. |
 | `icons.js` | Inline SVG icons. |
 | `ui.js` | Icon hydration, modals, HTML escaping. |

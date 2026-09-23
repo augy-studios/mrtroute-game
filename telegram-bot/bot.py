@@ -3,7 +3,7 @@
     python bot.py
 
 One process: Telethon's event loop, plus an hourly tidy of old SQLite rows.
-Game state lives behind the API; SQLite holds buttons and remembered names.
+Game state lives behind the API; SQLite holds buttons and settings.
 
 Exit codes: 0 clean stop, 2 bad environment, 3 already running, 1 other.
 """

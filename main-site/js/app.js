@@ -4,6 +4,7 @@ import { initUpdateBar } from "./update-bar.js";
 import { initGame } from "./game.js";
 import { initLeaderboard } from "./leaderboard.js";
 import { initGuide } from "./guide.js";
+import { initSettings } from "./settings.js";
 
 /* Theme modal, per uwuapps-theme.md section 6. */
 
@@ -91,6 +92,7 @@ function boot() {
   buildThemeModal();
   wireModals();
   initLeaderboard();
+  initSettings();
   initGuide();
   initGame();
   initUpdateBar();

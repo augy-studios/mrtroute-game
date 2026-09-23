@@ -63,5 +63,8 @@ class GameApi:
     async def submit(self, run_id: str, name: str) -> dict:
         return await self._call("POST", "/api/leaderboard/submit", {"run_id": run_id, "name": name})
 
-    async def leaderboard(self) -> dict:
-        return await self._call("GET", "/api/leaderboard")
+    async def check_name(self, name: str) -> dict:
+        return await self._call("POST", "/api/leaderboard/name", {"name": name})
+
+    async def leaderboard(self, board: str = "best") -> dict:
+        return await self._call("GET", f"/api/leaderboard?board={board}")

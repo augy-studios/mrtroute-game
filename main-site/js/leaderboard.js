@@ -1,23 +1,50 @@
-// The leaderboard window: one row per name, its best run.
+// The leaderboard window: best score or total points, one row per name.
 
 import { api } from "./api.js";
 import { escapeHtml, openModal } from "./ui.js";
 
+const BOARDS = {
+  best: {
+    head: ["#", "Name", "Score"],
+    row: (e) => [e.rank, e.name, e.score],
+    about: "Each name's single best run.",
+  },
+  total: {
+    head: ["#", "Name", "Total", "Runs"],
+    row: (e) => [e.rank, e.name, e.total, e.runs],
+    about: "Every run added under a name, scores added up.",
+  },
+};
+
+let board = "best";
 let loading = 0;
+
+function setTab(next) {
+  board = next;
+  document.querySelectorAll("#boardTabs [data-board]").forEach((el) => {
+    const on = el.dataset.board === board;
+    el.classList.toggle("active", on);
+    el.setAttribute("aria-selected", String(on));
+  });
+}
 
 async function load() {
   const body = document.getElementById("boardBody");
+  const note = document.getElementById("boardNote");
   const ticket = ++loading;
+  const spec = BOARDS[board];
   body.setAttribute("aria-busy", "true");
+  note.textContent = spec.about;
 
   try {
-    const { entries = [] } = await api.leaderboard();
+    const data = await api.leaderboard(board);
     if (ticket !== loading) return;
+    const entries = data.entries ?? [];
     body.innerHTML = entries.length
       ? `<table class="board-table">
-          <thead><tr><th scope="col">#</th><th scope="col">Name</th><th scope="col">Score</th></tr></thead>
+          <thead><tr>${spec.head.map((h) => `<th scope="col">${h}</th>`).join("")}</tr></thead>
           <tbody>${entries
-            .map((e) => `<tr><td>${e.rank}</td><td>${escapeHtml(e.name)}</td><td>${e.score}</td></tr>`)
+            .map((e) => `<tr>${spec.row(e).map((v) => `<td>${escapeHtml(v)}</td>`).join("")}</tr>`)
             .join("")}</tbody>
         </table>`
       : `<p class="board-empty">No scores yet. Finish a run and add yours.</p>`;
@@ -31,11 +58,18 @@ async function load() {
   }
 }
 
-export function openLeaderboard() {
+export function openLeaderboard(which = board) {
+  setTab(which);
   openModal("boardModal");
   load();
 }
 
 export function initLeaderboard() {
-  document.getElementById("boardBtn").addEventListener("click", openLeaderboard);
+  document.getElementById("boardBtn").addEventListener("click", () => openLeaderboard());
+  document.getElementById("boardTabs").addEventListener("click", (e) => {
+    const tab = e.target.closest("[data-board]");
+    if (!tab || tab.dataset.board === board) return;
+    setTab(tab.dataset.board);
+    load();
+  });
 }
