@@ -1,0 +1,558 @@
+/* App layout and components. Theme tokens and primitives are in theme.css. */
+
+:root[data-mode="dark"] { color-scheme: dark; }
+
+h1, h2, h3 { font-weight: normal; }
+
+:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* The update bar, when there is one, then the page column. */
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 14px;
+  padding-top: max(14px, env(safe-area-inset-top));
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.brand-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 7px;
+}
+.brand-name {
+  font-size: 1.2rem;
+  color: var(--brand-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 20px;
+  text-align: center;
+}
+.card p {
+  max-width: 34em;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.card-icon {
+  display: inline-flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.card-icon svg { width: 30px; height: 30px; }
+
+.foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.footer-heart {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+  /* Fixed meaning: reads as a heart whatever the brand colour. */
+  color: #34c759;
+}
+.footer-heart svg { width: 100%; height: 100%; }
+
+/* Buttons. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  transition: background 0.15s ease;
+}
+.btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.btn-primary {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.btn-primary:hover { background: var(--brand-fill-strong); }
+.btn-quiet {
+  color: var(--ink);
+  border: 1px solid var(--surface-border);
+}
+.pill { border-radius: 999px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  font-size: 0.85rem;
+  color: var(--muted-strong);
+}
+
+/* The game card. Panels swap with a class flip; the entrance is CSS. */
+.game { padding: 22px 20px; }
+.game .hidden { display: none !important; }
+
+.panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: panel-in 0.2s ease;
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+.notice p { color: var(--muted); }
+
+.round-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 14px;
+  font-size: 0.95rem;
+}
+.card .round-meta { color: var(--muted); }
+.score { color: var(--brand-ink); }
+
+/* One segment per question: where the run is, and how it has gone. The
+   words above say the same, so this is decoration to a screen reader. */
+.progress {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  width: min(360px, 100%);
+  list-style: none;
+}
+.progress li {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+  transition: background 0.2s ease;
+}
+.progress li.now { background: var(--brand-ink); border-color: var(--brand-ink); }
+.progress li.done { background: var(--muted-strong); border-color: transparent; }
+.progress li.right { background: var(--ok); border-color: var(--ok); }
+.progress li.wrong { background: var(--error); border-color: var(--error); }
+
+.prompt {
+  max-width: 30em;
+  font-size: 1.35rem;
+  line-height: 1.35;
+  color: var(--ink);
+  margin: 4px 0 2px;
+}
+.prompt:focus { outline: none; }
+
+/* The four answers. One tap each; after the answer, the right one and the
+   one picked are marked with an icon as well as a colour. */
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 520px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface-strong);
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  color: var(--ink);
+  font-size: 1rem;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+.option:hover:not(:disabled) {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+  transform: translateY(-1px);
+}
+.option:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.option .key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  font-size: 0.8rem;
+}
+.option .label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.option .mark { display: inline-flex; flex-shrink: 0; }
+.option .mark svg { width: 20px; height: 20px; }
+.option.picked { background: var(--brand-fill); color: var(--on-brand); }
+.option.right {
+  background: color-mix(in srgb, var(--ok) 14%, var(--surface-strong));
+  border-color: var(--ok);
+  color: var(--ink);
+}
+.option.right .mark { color: var(--ok); }
+.option.wrong {
+  background: color-mix(in srgb, var(--error) 14%, var(--surface-strong));
+  border-color: var(--error);
+  color: var(--ink);
+}
+.option.wrong .mark { color: var(--error); }
+.option.dim { color: var(--muted-strong); }
+
+.card .feedback {
+  min-height: 1.4em;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.card .feedback.right { color: var(--ok); }
+.card .feedback.miss { color: var(--warn); }
+.card .feedback.error { color: var(--error); }
+.card .explain {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.card .explain:empty { display: none; }
+
+.round-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.round-actions:empty { display: none; }
+.round-actions .btn { padding: 9px 16px; }
+
+/* A finished run. */
+.result-title {
+  font-size: 1.8rem;
+  color: var(--brand-ink);
+}
+.result-title:focus { outline: none; }
+.card .result-score { font-size: 1.4rem; }
+.card .result-correct { color: var(--muted); }
+
+.submit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+.submit-label {
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.name-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+}
+.field {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-strong);
+  /* 3:1 against the card, as a field's edge must be. */
+  border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+  color: var(--ink);
+  font-size: 1rem;
+}
+.field::placeholder { color: var(--muted-strong); opacity: 1; }
+.name-row .btn {
+  padding: 10px 16px;
+  font-size: 0.95rem;
+}
+.card .submit-msg {
+  min-height: 1.2em;
+  font-size: 0.85rem;
+  color: var(--error);
+}
+.card .submit-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.submitted {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 440px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  text-align: left;
+}
+.card .submitted p { color: var(--ok); }
+.ok-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--ok);
+}
+.ok-icon svg { width: 100%; height: 100%; }
+
+/* Leaderboard modal. */
+.board-body {
+  min-height: 120px;
+  max-height: 50vh;
+  overflow-y: auto;
+  transition: opacity 0.15s ease;
+}
+.board-body[aria-busy="true"] { opacity: 0.6; }
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.board-table th {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: normal;
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+}
+.board-table td {
+  padding: 7px 8px;
+  border-top: 1px solid var(--surface-border);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.board-table th:first-child,
+.board-table td:first-child { width: 2.5em; color: var(--muted-strong); }
+.board-empty {
+  padding: 32px 8px;
+  text-align: center;
+  color: var(--muted-strong);
+}
+
+/* Line guide modal. Line colours come from the data as --line; each is a
+   fixed-meaning colour, like the footer heart, and only ever draws the rail
+   and dots, never text. */
+.modal.guide { max-width: 480px; }
+.line-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.line-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  font-size: 0.85rem;
+  color: var(--muted-strong);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.line-tab.active {
+  background: var(--brand-fill);
+  color: var(--on-brand);
+}
+.line-tab .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+  border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+}
+.line-body {
+  min-height: 160px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.line-title {
+  font-size: 1rem;
+  color: var(--brand-ink);
+  margin: 2px 0 8px;
+}
+.stops { list-style: none; }
+.stop,
+.stop-break {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0 5px 26px;
+}
+/* The rail, then a dot per station. */
+.stop::before,
+.stop-break::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--line);
+}
+.stop::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--line);
+  box-sizing: border-box;
+}
+.stop:first-child::before { top: 50%; }
+.stop:last-child::before { bottom: 50%; }
+.stop-break {
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+}
+/* A dashed rail where the list jumps to a branch or a loop. */
+.stop-break::before {
+  width: 0;
+  background: none;
+  border-left: 4px dashed var(--line);
+}
+.stop-break:empty { padding-top: 2px; padding-bottom: 2px; }
+.stop-code {
+  min-width: 3.2em;
+  font-size: 0.8rem;
+  color: var(--muted-strong);
+}
+.stop-name { color: var(--ink); }
+.stop-zh {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--muted-strong);
+}
+
+/* Update bar, per update-bar-spec.md. Quieter than the header, full width,
+   tinted enough to read as a notice. */
+.update-notice {
+  flex: none;
+  background: color-mix(in srgb, var(--brand-ink) 12%, var(--bg));
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--ink);
+  font-size: 0.875rem;
+}
+.update-notice-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  /* Under the notch on a phone, where the bar is the topmost thing on screen. */
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+.update-notice p { flex: 1 1 auto; min-width: 0; }
+.update-notice .btn {
+  flex: none;
+  padding: 6px 12px;
+}
+
+/* With the bar showing, it owns the notch and the page does not pad for it. */
+.update-notice + .page { padding-top: 14px; }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 10px;
+    padding-top: max(10px, env(safe-area-inset-top));
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .update-notice + .page { padding-top: 10px; }
+  .topbar { padding: 8px 8px 8px 12px; }
+  /* Four header buttons leave no room for the name on a phone; the icon
+     stays, and the heading is still read out. */
+  .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .topbar-actions { gap: 6px; }
+  .game { padding: 18px 14px; }
+  .prompt { font-size: 1.2rem; }
+  .options { grid-template-columns: 1fr; }
+  .result-title { font-size: 1.5rem; }
+  .update-notice-inner { flex-wrap: wrap; }
+  .update-notice p { flex-basis: 100%; }
+}

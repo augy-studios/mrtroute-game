@@ -1,16 +1,18 @@
 {
-    "name": "MRT Route Game by UwU Apps",
-    "short_name": "MRT Route Game",
-    "description": "A simple mrtroute app; view live mrtroute at a glance!",
+    "name": "MRT Navigator Game by UwU Apps",
+    "short_name": "MRT Navigator Game",
+    "description": "How well do you know Singapore's MRT lines? Ten quick questions on station order: which stop comes next, what sits between, how many stops. One tap each.",
     "icons": [{
-            "src": "RSG-192.png",
+            "src": "/RSG-192.png",
             "type": "image/png",
-            "sizes": "192x192"
+            "sizes": "192x192",
+            "purpose": "any"
         },
         {
-            "src": "RSG-512.png",
+            "src": "/RSG-512.png",
             "type": "image/png",
-            "sizes": "512x512"
+            "sizes": "512x512",
+            "purpose": "any"
         }
     ],
     "screenshots": [{
@@ -27,18 +29,18 @@
         }
     ],
     "start_url": "/",
-    "theme_color": "#cfc",
-    "background_color": "#cfc",
+    "theme_color": "#ccffcc",
+    "background_color": "#ccffcc",
     "display": "standalone",
     "display_override": ["fullscreen", "minimal-ui", "window-controls-overlay"],
     "orientation": "any",
-    "id": "mrtroute",
+    "id": "mrtnav",
     "dir": "ltr",
     "scope": "/",
     "lang": "en",
     "categories": [
+        "games",
         "entertainment",
-        "lifestyle",
-        "utilities"
+        "travel"
     ]
 }
