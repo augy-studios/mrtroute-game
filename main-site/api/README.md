@@ -49,7 +49,8 @@ run, so asking twice, or from two tabs, never rolls a fresh question.
 
 Errors are `{ "error": code, "message"? }` with a matching status: `400` bad
 input, `401` bad bot token, `404` no such run or question, `409` already
-answered, run finished or already submitted, `410` run expired. A
+answered, run finished, already submitted or answered too fast, `410` run
+expired. A
 `409 already_answered` also carries the result the first answer
 got, so a double tap shows the same thing twice.
 
@@ -61,9 +62,22 @@ got, so a double tap shows the same thing twice.
 | Levels | 1 to 3 easy, 4 to 7 medium, 8 to 10 hard |
 | Points | 100, 200, 300 for a right answer; nothing lost for a wrong one |
 | Run lifetime | An hour, for answering and for submitting |
+| Too fast | A right answer within 1 second of the question being made; more than one keeps the run off the leaderboard |
 
 Answering is one SQL function, `lineorder_answer`, which locks the question
 and its run, so a score moves once per question however many taps arrive.
+
+## Anti-cheat
+
+The network is public, so a script could answer every question right in
+milliseconds. `lineorder_answer` times each answer on the database clock,
+from the question being made to the answer arriving, and counts right
+answers under a second in the run's `fast_answers`. Loading, reloads and
+the bots' relay only add time, so a person cannot trip it by accident.
+One is forgiven; with two or more, submit refuses with
+`409 too_fast`. The run still plays out and scores as normal.
+
+Each question also keeps its `answered_at`, for looking into a run by hand.
 
 ## Questions
 

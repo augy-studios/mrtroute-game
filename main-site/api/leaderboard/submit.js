@@ -13,6 +13,7 @@ const REFUSALS = {
   unfinished: [409, "Only a finished run can go on the leaderboard."],
   already_submitted: [409, "That run is already on the leaderboard."],
   expired: [410, "That run is more than an hour old."],
+  too_fast: [409, "That run was answered too fast to be real, so it cannot go on the leaderboard."],
 };
 
 export default endpoint("POST", async ({ body }) => {

@@ -225,7 +225,7 @@ async function submitAs(name, auto = false) {
     else if (auto && err.status === 400) msg.textContent = "Your saved name was refused, so this run was not added. Change it in Settings.";
     else if (auto && err.status !== 409 && err.status !== 410) msg.textContent = "This run could not be added automatically. Try the button.";
     else msg.textContent = err.message || "That did not go through. Try again in a moment.";
-    if (err.code === "already_submitted" || err.code === "expired") $("submitForm").classList.add("hidden");
+    if (["already_submitted", "expired", "too_fast"].includes(err.code)) $("submitForm").classList.add("hidden");
     else $("submitBtn").disabled = false;
   }
 }
