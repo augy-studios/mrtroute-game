@@ -3,7 +3,7 @@
 // `choice` is the index of the option picked, 0 to 3. It is checked against
 // the stored answer here; answer_index is only ever sent back after that.
 
-import { clientKey, endpoint, HttpError, rateLimit, uuid } from "../_lib/http.js";
+import { clientKey, endpoint, HttpError, uuid } from "../_lib/http.js";
 import { rpc } from "../_lib/supabase.js";
 
 const REFUSALS = {
@@ -13,8 +13,7 @@ const REFUSALS = {
   run_expired: [410, "run_expired", "This run has expired. Start a new one."],
 };
 
-export default endpoint("POST", async ({ req, bot, body }) => {
-  await rateLimit(req, bot, "answer", 60);
+export default endpoint("POST", async ({ bot, body }) => {
   const id = uuid(body.question_id, "bad_question_id");
   const key = clientKey(body.client_key, bot);
   const choice = body.choice;

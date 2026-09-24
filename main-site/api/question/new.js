@@ -5,7 +5,7 @@
 // easier one. The answer stays in lineorder_questions.
 
 import { randomInt } from "node:crypto";
-import { clientKey, endpoint, HttpError, rateLimit, uuid } from "../_lib/http.js";
+import { clientKey, endpoint, HttpError, uuid } from "../_lib/http.js";
 import { loadNetwork } from "../_lib/network.js";
 import { difficultyFor, generate } from "../_lib/questions.js";
 import { isExpired, loadRun, questionView } from "../_lib/runs.js";
@@ -13,8 +13,7 @@ import { rest, UpstreamError } from "../_lib/supabase.js";
 
 const SHOWN = "id,seq,template,subject,prompt,options,difficulty,answered";
 
-export default endpoint("POST", async ({ req, bot, body }) => {
-  await rateLimit(req, bot, "question", 60);
+export default endpoint("POST", async ({ bot, body }) => {
   const id = uuid(body.run_id, "bad_run_id");
   const key = clientKey(body.client_key, bot);
 

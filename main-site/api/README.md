@@ -49,8 +49,8 @@ run, so asking twice, or from two tabs, never rolls a fresh question.
 
 Errors are `{ "error": code, "message"? }` with a matching status: `400` bad
 input, `401` bad bot token, `404` no such run or question, `409` already
-answered, run finished or already submitted, `410` run expired, `429` rate
-limited. A `409 already_answered` also carries the result the first answer
+answered, run finished or already submitted, `410` run expired. A
+`409 already_answered` also carries the result the first answer
 got, so a double tap shows the same thing twice.
 
 ## Rules
@@ -94,12 +94,11 @@ shortest ride along the named line.
 
 Check changes with `node scripts/sample-questions.mjs`.
 
-## Auth and limits
+## Auth
 
 Bots send `Authorization: Bearer <BOT_API_TOKEN>`. A wrong token is a `401`,
-not a fallback to browser rules. Browsers send nothing and are rate limited by
-IP through `lineorder_hit`; bots are not, since every Telegram player shares
-the VPS's address. Submissions are 5 per 10 minutes per IP.
+not a fallback to browser rules. Browsers send nothing. There is no rate
+limiting.
 
 ## Files
 
@@ -109,7 +108,7 @@ the VPS's address. Submissions are 5 per 10 minutes per IP.
 | `_lib/questions.js` | The five templates, difficulty and wrong answers. Pure. |
 | `_lib/network.js` | Lines, stops and links as a graph, loaded from Supabase and cached. |
 | `_lib/runs.js` | Runs, and what a client may see of runs and questions. |
-| `_lib/http.js` | Auth, rate limits, input checks, error replies. |
+| `_lib/http.js` | Auth, input checks, error replies. |
 | `_lib/names.js` | Leaderboard name cleaning and the English and Chinese word filter. |
 | `_lib/lines.js` | Line codes, names and colours. |
 | `_lib/supabase.js` | Supabase REST with the service role key. |

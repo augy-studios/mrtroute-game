@@ -4,7 +4,7 @@
 // are the cumulative one. The score is read from the run, never taken from
 // the request.
 
-import { endpoint, HttpError, rateLimit, uuid } from "../_lib/http.js";
+import { endpoint, HttpError, uuid } from "../_lib/http.js";
 import { cleanName } from "../_lib/names.js";
 import { rpc } from "../_lib/supabase.js";
 
@@ -15,8 +15,7 @@ const REFUSALS = {
   expired: [410, "That run is more than an hour old."],
 };
 
-export default endpoint("POST", async ({ req, bot, body }) => {
-  await rateLimit(req, bot, "submit", 5, 600);
+export default endpoint("POST", async ({ body }) => {
   const id = uuid(body.run_id, "bad_run_id");
   const name = cleanName(body.name);
 
